@@ -1,8 +1,38 @@
 // import React from 'react'
+import { useState } from 'react';
+import PageHeader from './layouts/PageHeader.tsx';
+import CategoryPills from './Components/CategoryPills.tsx';
+import VideoGridItem from './Components/VideoGridItem.tsx';
+import SideBar
+    from './layouts/SideBar.tsx';
+import { categories, videos } from './data/home.ts';
+import {SidebarProvider} from './contexts/SidebarContext.tsx';
 
 const App = () => {
+    const [selectedCategory, setSelectedCategory] = useState(categories[0])
     return (
-        <div className={"bg-amber-400"}>App</div>
+        <SidebarProvider>
+        <div className={"max-h-screen flex flex-col"}>
+           <PageHeader/>
+           <div className={"grid  flex-grow-1 overflow-auto"}
+                style={{ gridTemplateColumns: "auto 1fr" }}
+           >
+               <SideBar/>
+               <div className={ "overflow-x-hidden px-8 pb-4 " }>
+                   <div className={ "sticky top-0 bg-white z-10 pb-4" }>
+                       <CategoryPills categories={ categories } selectedCategory={ selectedCategory }
+                                      onSelect={ setSelectedCategory } />
+                   </div>
+                   <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+                       { videos?.map(video => (
+
+                           <VideoGridItem key={ video.id } { ...video } />
+                       )) }
+                   </div>
+               </div>
+           </div>
+        </div>
+        </SidebarProvider>
     )
 }
 export default App;
